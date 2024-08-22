@@ -4,6 +4,7 @@ let trackedHandler = null;
 let trackedTabId = null;
 let trackedTabName = null;
 let targetObsInputName = "Playlist"; // Replace with your text source name in OBS
+let refreshInterval = 5000; // Interval to check tab status (in milliseconds)
 
 
 function connectToOBS() {
@@ -89,7 +90,7 @@ function trackSpecificTab(tabId) {
     console.log(`Tracking tab with ID: ${tabId}`);
 
     // Set an interval to regularly check the status of the tracked tab
-    return setInterval(function() {
+	callbackFn = function() {
         chrome.tabs.get(tabId, function(tab) {
             if (chrome.runtime.lastError || !tab) {
                 console.error(`Tab with ID ${tabId} no longer exists or an error occurred.`);
@@ -112,7 +113,9 @@ function trackSpecificTab(tabId) {
             //     updateOBSTextSource(tab.title, targetObsInputName);
             // }
         });
-    }, 5000); // Adjust the interval as needed (currently set to 5 seconds)
+    }
+	callbackFn(); // Run once immediately
+    return setInterval(callbackFn, refreshInterval); // Adjust the interval as needed (currently set to 5 seconds)
 }
 
 // Example function to update a text source in OBS
