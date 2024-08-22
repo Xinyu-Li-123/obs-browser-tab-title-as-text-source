@@ -140,3 +140,10 @@ function updateOBSTextSource(text, obsInputName) {
 
 // Start OBS connection and tracking
 connectToOBS();
+
+// Response to getTab message
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if (request.action === "getTab") {
+		sendResponse({tabId: trackedTabId, tabTitle: trackedTabName});
+	}
+});
